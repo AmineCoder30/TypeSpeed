@@ -8,14 +8,17 @@ import { Badge } from "@/components/ui/badge"
 import { useAuthStore } from "@/lib/auth-store"
 import { AuthModal } from "./auth-modal"
 import { cn } from "@/lib/utils"
+import { useTypingStore } from "@/lib/store"
 
 interface UserMenuProps {
   collapsed?: boolean
+  onToggle?: () => void
 }
 
-export function UserMenu({ collapsed = false }: UserMenuProps) {
+export function UserMenu({ collapsed = false, onToggle }: UserMenuProps) {
   const { user, profile, signOut } = useAuthStore()
   const [showAuthModal, setShowAuthModal] = useState(false)
+  const { setShowSettings, setCurrentView } = useTypingStore()
   const [showMenu, setShowMenu] = useState(false)
 
   const getSkillLevel = () => {
@@ -90,7 +93,13 @@ export function UserMenu({ collapsed = false }: UserMenuProps) {
             "gap-3 p-3 h-auto bg-muted/50 hover:bg-muted text-foreground border border-border/50 hover:border-border transition-all duration-300",
             collapsed ? "w-12 justify-center px-0" : "w-full",
           )}
-          onClick={() => setShowMenu(!showMenu)}
+          onClick={() => {
+            if (collapsed && onToggle) {
+              onToggle()
+            }
+            setShowMenu(!showMenu)
+            setShowAuthModal(!showAuthModal)
+          }}
         >
           <div
             className={`w-10 h-10 bg-gradient-to-r ${skillLevel.gradient} rounded-full flex items-center justify-center relative`}
@@ -125,7 +134,7 @@ export function UserMenu({ collapsed = false }: UserMenuProps) {
             initial={{ opacity: 0, scale: 0.95, y: -10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -10 }}
-            className="absolute right-0 top-full mt-2 w-72 bg-gradient-to-b from-card to-background border border-border rounded-xl shadow-2xl z-50 overflow-hidden"
+            className="absolute left-0 bottom-full mt-2 w-full bg-gradient-to-b from-card to-background border border-border rounded-xl shadow-2xl z-50 overflow-hidden"
           >
             {/* Header */}
             <div className="p-4 border-b border-border bg-muted/30">
@@ -184,6 +193,7 @@ export function UserMenu({ collapsed = false }: UserMenuProps) {
                 className="w-full justify-start gap-3 h-11 text-muted-foreground hover:text-foreground hover:bg-gradient-to-r hover:from-blue-500/20 hover:to-purple-500/20 transition-all duration-300"
                 onClick={() => {
                   setShowMenu(false)
+                  setShowSettings(true)
                 }}
               >
                 <Settings className="w-4 h-4 text-blue-400" />
@@ -194,6 +204,7 @@ export function UserMenu({ collapsed = false }: UserMenuProps) {
                 className="w-full justify-start gap-3 h-11 text-muted-foreground hover:text-foreground hover:bg-gradient-to-r hover:from-yellow-500/20 hover:to-orange-500/20 transition-all duration-300"
                 onClick={() => {
                   setShowMenu(false)
+                  setCurrentView("profile")
                 }}
               >
                 <Trophy className="w-4 h-4 text-yellow-400" />

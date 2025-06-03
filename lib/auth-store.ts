@@ -90,7 +90,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   signOut: async () => {
     await supabase.auth.signOut()
+    localStorage.clear()
     set({ user: null, profile: null })
+  
   },
 
   updateProfile: async (updates: Partial<UserProfile>) => {

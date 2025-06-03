@@ -277,7 +277,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       {/* Footer */}
       <div className="p-4 border-t border-border space-y-3 relative z-10">
         <div className="mb-3">
-          <UserMenu collapsed={collapsed} />
+          <UserMenu collapsed={collapsed} onToggle={onToggle} />
         </div>
 
         <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
